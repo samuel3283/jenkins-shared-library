@@ -45,7 +45,12 @@ class JenkinsCloudFormation extends Base implements Serializable {
     def projectName="${script.env.project}".toLowerCase()
 
      docker.withRegistry("https://${env.REGISTRY_URL}", "account-aws-user-devops"){
-      withCredentials([usernamePassword(credentialsId: "account-aws-user-devops", passwordVariable: "SECRET", usernameVariable: "ACCESS")]) { {
+	 	 
+	 this.script.steps.withCredentials([[
+      $class: 'UsernamePasswordMultiBinding',
+      credentialsId: 'account-aws-user-devops',
+      usernameVariable: 'ACCESS',
+      passwordVariable: 'SECRET']]) {
         String dockerParameters = "--network=host"
         String dockerCommand = "aws configure set aws_access_key_id $ACCESS && aws configure set aws_secret_access_key $SECRET && aws configure set default.region ${env.AWS_REGION} && aws --version"       
         String dockerCmd = "docker run ${dockerParameters} ${env.REGISTRY_NAME}:awscli sh -c \"${dockerCommand}\""
