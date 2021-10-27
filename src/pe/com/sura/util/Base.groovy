@@ -45,7 +45,7 @@ abstract class Base {
   }
 
   protected String getBuildTimestamp() {
-    return this.buildTimestamp
+    return ${this.buildTimestamp}
   }
 
   protected void setBranchName() {
@@ -57,7 +57,7 @@ abstract class Base {
   }
 
   protected String getBranchName() {
-    return this.branchName
+    return ${this.branchName}
   }
 
   protected void setGitCommit() {
@@ -69,7 +69,7 @@ abstract class Base {
   }
 
   protected String getGitCommit() {
-    return this.gitCommit
+    return ${this.gitCommit}.substring(0,8)
   }
 
   protected void setGitURL() {
@@ -81,7 +81,7 @@ abstract class Base {
   }
 
   protected String getGitURL() {
-    return this.gitURL
+    return ${this.gitURL}
   }
 
   protected void setBuildUserMail() {
@@ -100,7 +100,7 @@ abstract class Base {
   }
 
   protected String getBuildUserMail() {
-    return this.buildUserMail
+    return ${this.buildUserMail}
   }
 
   protected throwException(String message) {
@@ -116,15 +116,15 @@ abstract class Base {
   }
 
   public String getGitProjectName(){
-    return this.gitProjectName
+    return ${this.gitProjectName}
   }
 
   public String getBuildResult() {
-    return this.script.currentBuild.result
+    return ${this.script.currentBuild.result}
   }
 
   public String getBuildId() {
-    return this.script.currentBuild.id
+    return return ${this.script.currentBuild.id}
   }
 
   public void executePostExecutionTasks() {
