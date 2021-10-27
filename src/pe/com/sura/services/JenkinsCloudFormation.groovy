@@ -7,6 +7,7 @@ package pe.com.sura.services;
 */
 import pe.com.sura.util.Base;
 import org.jenkinsci.plugins.docker.workflow.*;
+import org.jenkinsci.plugins.docker.workflow.Docker;
 import com.cloudbees.plugins.credentials.*
 import com.cloudbees.plugins.credentials.common.*
 

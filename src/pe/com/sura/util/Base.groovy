@@ -3,6 +3,7 @@ package pe.com.sura.util
 import groovy.json.JsonBuilder
 import groovy.json.JsonSlurper;
 import org.jenkinsci.plugins.docker.workflow.*;
+import org.jenkinsci.plugins.docker.workflow.Docker;
 import com.cloudbees.plugins.credentials.*
 import com.cloudbees.plugins.credentials.common.*
 
