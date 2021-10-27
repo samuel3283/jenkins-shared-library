@@ -10,7 +10,7 @@ abstract class Base {
   protected String gitURL;
   protected String buildUserMail;
   protected String gitProjectName;
-  protected Docker docker;
+  //protected Docker docker;
   protected String buildId;
   protected String buildResult;
 
