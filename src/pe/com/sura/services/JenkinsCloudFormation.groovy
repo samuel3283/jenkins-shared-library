@@ -6,20 +6,10 @@ package pe.com.sura.services;
 * Date: 20/10/2021
 */
 import pe.com.sura.util.Base;
-/*import org.jenkinsci.plugins.docker.workflow.*;
-import com.cloudbees.plugins.credentials.CredentialsProvider;
-import com.cloudbees.plugins.credentials.common.StandardUsernameCredentials;
-import com.cloudbees.plugins.credentials.domains.URIRequirementBuilder;
-import com.cloudbees.plugins.credentials.common.UsernamePasswordCredentials;
-import hudson.security.ACL;
-import groovy.json.JsonSlurper;
-import groovy.json.JsonOutput;
+import org.jenkinsci.plugins.docker.workflow.*;
 import com.cloudbees.plugins.credentials.*
 import com.cloudbees.plugins.credentials.common.*
-import com.cloudbees.plugins.credentials.domains.DomainRequirement;
-import org.apache.commons.io.FilenameUtils;
-import org.apache.commons.lang.StringUtils;
-*/
+
 class JenkinsCloudFormation extends Base implements Serializable {
   /* General Properties */
   def execMavenCpu="2"

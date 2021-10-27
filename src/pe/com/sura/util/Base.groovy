@@ -1,5 +1,11 @@
 package pe.com.sura.util
 
+import groovy.json.JsonBuilder
+import groovy.json.JsonSlurper;
+import org.jenkinsci.plugins.docker.workflow.*;
+import com.cloudbees.plugins.credentials.*
+import com.cloudbees.plugins.credentials.common.*
+
 abstract class Base {
   protected script;
   protected String type;
@@ -10,7 +16,7 @@ abstract class Base {
   protected String gitURL;
   protected String buildUserMail;
   protected String gitProjectName;
-  //protected Docker docker;
+  protected Docker docker
   protected String buildId;
   protected String buildResult;
 
@@ -20,7 +26,7 @@ abstract class Base {
   protected Base(script, String type = '') {
     this.script = script
     this.type = type
-    //this.docker = new Docker(this.script);
+    this.docker = new Docker(this.script);
   }
 
   public void configure(){
