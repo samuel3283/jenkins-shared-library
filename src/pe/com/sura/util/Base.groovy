@@ -120,11 +120,11 @@ abstract class Base {
   }
 
   public String getBuildResult() {
-    return ${this.script.currentBuild.result}
+    return this.script.currentBuild.result
   }
 
   public String getBuildId() {
-    return return ${this.script.currentBuild.id}
+    return this.script.currentBuild.id
   }
 
   public void executePostExecutionTasks() {
