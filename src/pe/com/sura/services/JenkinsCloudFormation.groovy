@@ -31,8 +31,8 @@ class JenkinsCloudFormation extends Base implements Serializable {
 
   public JenkinsCloudFormation(script,String type = '') {
     super(script, type)
-    steps.echo "type: ${type}"
-    steps.echo "script: ${script}"
+    this.script.steps.echo "script: ${script}"
+    this.script.steps.echo "type: ${type}"
   }
 
   public void configure(){
