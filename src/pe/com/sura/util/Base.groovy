@@ -25,11 +25,13 @@ abstract class Base {
 
   public void configure(){
     setBuildTimestamp()
-    setBranchName()
+	/*
+	setBranchName()
     setGitCommit()
     setGitURL()
     setBuildUserMail()
     setGitProjectName()
+	*/
   }
 
   protected void printMessage(String message){
@@ -47,7 +49,7 @@ abstract class Base {
   protected String getBuildTimestamp() {
     return ${this.buildTimestamp}
   }
-
+/*
   protected void setBranchName() {
     this.branchName = this.script.steps.sh(
       script: 'git name-rev --name-only HEAD | sed "s?.*remotes/origin/??"',
@@ -81,7 +83,7 @@ abstract class Base {
   }
 
   protected String getGitURL() {
-    return this.gitURL
+    return ${gitURL}
   }
 
   protected void setBuildUserMail() {
@@ -138,9 +140,6 @@ abstract class Base {
     }
   }
 
-  /*
-  * This method will perform common post execution task
-  */
   public void executeOnErrorExecutionTasks() {
     //Clean up workspace when job was executed ok, this improve performance on server
     //TO FIX CLEAN UP
@@ -151,6 +150,6 @@ abstract class Base {
       }
     }
   }
-
+*/
 
 }
