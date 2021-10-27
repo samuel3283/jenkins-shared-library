@@ -1,4 +1,4 @@
-package pe.com.sura.services
+package pe.com.sura.services;
 
 /***
 * JenkinsCloudFormation - version 1.0.0
