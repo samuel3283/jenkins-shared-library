@@ -81,7 +81,7 @@ abstract class Base {
   }
 
   protected String getGitURL() {
-    return ${this.gitURL}
+    return this.gitURL
   }
 
   protected void setBuildUserMail() {
