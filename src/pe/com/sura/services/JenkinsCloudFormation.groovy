@@ -8,8 +8,12 @@ package pe.com.sura.services;
 import pe.com.sura.util.Base;
 import org.jenkinsci.plugins.docker.workflow.*;
 import org.jenkinsci.plugins.docker.workflow.Docker;
-import com.cloudbees.plugins.credentials.*
-import com.cloudbees.plugins.credentials.common.*
+import com.cloudbees.plugins.credentials.*;
+import com.cloudbees.plugins.credentials.common.*;
+import com.cloudbees.jenkins.plugins.amazonecr;
+import com.amazonaws;
+import org.apache.http.wire;
+import org.jenkinsci.plugins.docker.workflow;
 
 class JenkinsCloudFormation extends Base implements Serializable {
   /* General Properties */
@@ -33,7 +37,7 @@ class JenkinsCloudFormation extends Base implements Serializable {
   def deployIaC(){
     def projectName="${script.env.project}".toLowerCase()
 
-     docker.withRegistry("https://${script.env.REGISTRY_CONTAINER_URL}", "ecr:us-east-1:account-aws-user-devops"){
+     docker.withRegistry("https://${script.env.REGISTRY_CONTAINER_URL}", "ecr:us-east-1:credential-user-devops"){
 	 	 
 	 this.script.steps.withCredentials([[
       $class: 'UsernamePasswordMultiBinding',
