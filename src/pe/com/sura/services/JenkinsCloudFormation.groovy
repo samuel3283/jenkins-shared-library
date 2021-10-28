@@ -45,7 +45,7 @@ class JenkinsCloudFormation extends Base implements Serializable {
       passwordVariable: 'SECRET']]) {
         String dockerParameters = "--network=host"
         String dockerCommand = "aws configure set aws_access_key_id ${script.env.ACCESS} && aws configure set aws_secret_access_key ${script.env.SECRET} && aws configure set default.region ${script.env.AWS_REGION} && aws --version"       
-        String dockerCmd = "docker run ${dockerParameters} ${script.env.REGISTRY_NAME}:awscli sh -c \"${dockerCommand}\""
+        String dockerCmd = "docker run ${dockerParameters} ${script.env.REGISTRY_ECR_NAME}:awscli sh -c \"${dockerCommand}\""
        
         this.script.steps.sh "${dockerCmd}"
       }
