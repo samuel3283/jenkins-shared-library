@@ -9,10 +9,10 @@ import pe.com.sura.util.Base;
 import org.jenkinsci.plugins.docker.workflow.*;
 import org.jenkinsci.plugins.docker.workflow.Docker;
 import com.cloudbees.plugins.credentials.*;
-//import com.cloudbees.plugins.credentials.common.*;
-//import com.cloudbees.plugins.amazonecr;
-//import com.amazonaws;
-//import org.apache.http.wire;
+import com.cloudbees.plugins.credentials.common.*;
+import com.cloudbees.plugins.amazonecr;
+import com.amazonaws;
+import org.apache.http.wire;
 
 class JenkinsCloudFormation extends Base implements Serializable {
   /* General Properties */
