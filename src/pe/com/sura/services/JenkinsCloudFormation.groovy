@@ -33,7 +33,7 @@ class JenkinsCloudFormation extends Base implements Serializable {
   def deployIaC(){
     def projectName="${script.env.project}".toLowerCase()
 
-     docker.withRegistry("https://${script.env.REGISTRY_CONTAINER_URL}", "ecr:us-east-1:account-aws-user-devops"){
+     docker.withRegistry("https://${script.env.REGISTRY_CONTAINER_URL}", "account-aws-user-devops"){
 	 	 
 	 this.script.steps.withCredentials([[
       $class: 'UsernamePasswordMultiBinding',
