@@ -83,12 +83,14 @@ class JenkinsCloudFormation extends Base implements Serializable {
       returnStdout: true).trim()
 */
 
+/*
     def jsonResult = this.script.steps.sh(script: "cat parameter.json", returnStdout: true).trim()
     this.printMessage("json: ${jsonResult}")
 
     JsonSlurper jsonSlurper = new JsonSlurper()
     def jsonResultParsed = jsonSlurper.parseText(jsonResult)
 	//this.script.steps.echo "Objecto ${jsonResultParsed}"
+  */
   
      docker.withRegistry("https://${script.env.REGISTRY_CONTAINER_URL}", "ecr:us-east-1:credential-user-devops"){
 	 	 
@@ -102,6 +104,13 @@ class JenkinsCloudFormation extends Base implements Serializable {
         def dockerCommand =" aws configure set aws_access_key_id ${script.env.ACCESS} && aws configure set aws_secret_access_key ${script.env.SECRET} && aws configure set default.region ${script.env.AWS_REGION} "
         dockerCommand+=" && aws cloudformation create-stack --stack-name stack001 --template-body file:///home/workspace/template.yml --parameters ParameterKey=ResourceName,ParameterValue=sura-dev-config-s3-demo ParameterKey=ParamTagProject,ParameterValue=PROYECTO001 ParameterKey=ParamTagEnv,ParameterValue=DEV "
 		String dockerCmd = "docker run ${dockerParameters} ${dockerVolumen} ${script.env.REGISTRY_CONTAINER_URL}/${script.env.REGISTRY_ECR_NAME}:awscli-kubectl sh -c \"${dockerCommand}\""
+
+        def jsonResult = sh (
+            script: "cat  $WORKSPACE/parameter.json",
+            returnStdout: true
+        ).trim()
+		JsonSlurper jsonSlurper = new JsonSlurper()
+		def jsonResultParsed = jsonSlurper.parseText(jsonResult)
 
         this.script.steps.sh "${dockerCmd}"
       }
