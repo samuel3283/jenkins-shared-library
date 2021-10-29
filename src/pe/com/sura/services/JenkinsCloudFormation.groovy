@@ -59,7 +59,7 @@ class JenkinsCloudFormation extends Base implements Serializable {
 */
 
 
-  def deployS3IaC(){
+  def deployIaC(){
     def projectName="${script.env.project}".toLowerCase()
 
      docker.withRegistry("https://${script.env.REGISTRY_CONTAINER_URL}", "ecr:us-east-1:credential-user-devops"){
@@ -70,7 +70,8 @@ class JenkinsCloudFormation extends Base implements Serializable {
       usernameVariable: 'ACCESS',
       passwordVariable: 'SECRET']]) {
         def dockerParameters = "--network=host"
-        def dockerCommand =" aws configure set aws_access_key_id ${script.env.ACCESS} && aws configure set aws_secret_access_key ${script.env.SECRET} && aws configure set default.region ${script.env.AWS_REGION} && aws --version "
+        def dockerCommand
+		dockerCommand+=" aws configure set aws_access_key_id ${script.env.ACCESS} && aws configure set aws_secret_access_key ${script.env.SECRET} && aws configure set default.region ${script.env.AWS_REGION} && aws --version "
         //dockerCommand+=" && aws cloudformation create-stack --stack-name STACK_S3 --template-body template.yml --parameters ParameterKey=BucketNameParam,ParameterValue=sura-dev-configuraciones ParameterKey=ProyectoParam,ParameterValue=PROYECTO001 ParameterKey=AmbienteParam,ParameterValue=DEV "
 		String dockerCmd = "docker run ${dockerParameters} ${script.env.REGISTRY_CONTAINER_URL}/${script.env.REGISTRY_ECR_NAME}:awscli-kubectl sh -c \"${dockerCommand}\""
 
