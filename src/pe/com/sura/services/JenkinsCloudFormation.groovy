@@ -59,7 +59,7 @@ class JenkinsCloudFormation extends Base implements Serializable {
 */
 
 
-  def deployIaC(){
+  def deployS3IaC(){
     def projectName="${script.env.project}".toLowerCase()
 
      docker.withRegistry("https://${script.env.REGISTRY_CONTAINER_URL}", "ecr:us-east-1:credential-user-devops"){
