@@ -9,11 +9,11 @@ import pe.com.sura.util.Base;
 import org.jenkinsci.plugins.docker.workflow.*;
 import org.jenkinsci.plugins.docker.workflow.Docker;
 import com.cloudbees.plugins.credentials.*;
-import com.cloudbees.plugins.credentials.common.*;
+//import com.cloudbees.plugins.credentials.common.*;
 //import com.cloudbees.plugins.amazonecr;
 //import com.amazonaws;
 //import org.apache.http.wire;
-import groovy.json.JsonBuilder
+//import groovy.json.JsonBuilder
 import groovy.json.JsonSlurper;
 import groovy.json.JsonSlurperClassic 
 
@@ -69,12 +69,13 @@ class JenkinsCloudFormation extends Base implements Serializable {
   def deployIaC(){
     def projectName="${script.env.project}".toLowerCase()
 
+/*
     def config =  jsonParse(readFile("parameter.json"))
 	this.script.steps.echo "Objecto ${jsonResultParsed}"
 	this.script.steps.echo "Objecto ${jsonResultParsed['s3']}"
+*/
 
 
-/*
     String jsonResult = this.script.steps.sh(
       script:"""
         set +x
@@ -85,8 +86,8 @@ class JenkinsCloudFormation extends Base implements Serializable {
     JsonSlurper jsonSlurper = new JsonSlurper()
     def jsonResultParsed = jsonSlurper.parseText(jsonResult)
 	this.script.steps.echo "Objecto ${jsonResultParsed}"
-	this.script.steps.echo "Objecto ${jsonResultParsed['s3']}"
-  */
+	this.script.steps.echo "Objecto ${jsonResultParsed['s3'][0]}"
+  
   
      docker.withRegistry("https://${script.env.REGISTRY_CONTAINER_URL}", "ecr:us-east-1:credential-user-devops"){
 	 	 
