@@ -15,7 +15,6 @@ import com.cloudbees.plugins.credentials.common.*;
 //import org.apache.http.wire;
 import groovy.json.JsonBuilder
 import groovy.json.JsonSlurper;
-import groovy.json.JsonSlurperClassic 
 
 
 class JenkinsCloudFormation extends Base implements Serializable {
@@ -62,19 +61,10 @@ class JenkinsCloudFormation extends Base implements Serializable {
   }
 */
 
-  def jsonParse(def json) {
-      new groovy.json.JsonSlurperClassic().parseText(json)
-  }
-  
+
   def deployIaC(){
     def projectName="${script.env.project}".toLowerCase()
 
-    def config =  jsonParse(readFile("parameter.json"))
-	this.script.steps.echo "Objecto ${jsonResultParsed}"
-	this.script.steps.echo "Objecto ${jsonResultParsed['s3']}"
-
-
-/*
     String jsonResult = this.script.steps.sh(
       script:"""
         set +x
@@ -86,7 +76,6 @@ class JenkinsCloudFormation extends Base implements Serializable {
     def jsonResultParsed = jsonSlurper.parseText(jsonResult)
 	this.script.steps.echo "Objecto ${jsonResultParsed}"
 	this.script.steps.echo "Objecto ${jsonResultParsed['s3']}"
-  */
   
      docker.withRegistry("https://${script.env.REGISTRY_CONTAINER_URL}", "ecr:us-east-1:credential-user-devops"){
 	 	 
