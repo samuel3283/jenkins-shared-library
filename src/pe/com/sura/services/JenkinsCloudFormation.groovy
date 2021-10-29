@@ -56,7 +56,7 @@ class JenkinsCloudFormation extends Base implements Serializable {
 
   }
 
-
+/*
   def deployIaC(){
     def projectName="${script.env.project}".toLowerCase()
 
@@ -80,6 +80,6 @@ class JenkinsCloudFormation extends Base implements Serializable {
     }
 
   }
-
+*/
 
 }
