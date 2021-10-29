@@ -9,12 +9,13 @@ import pe.com.sura.util.Base;
 import org.jenkinsci.plugins.docker.workflow.*;
 import org.jenkinsci.plugins.docker.workflow.Docker;
 import com.cloudbees.plugins.credentials.*;
-//import com.cloudbees.plugins.credentials.common.*;
+import com.cloudbees.plugins.credentials.common.*;
 //import com.cloudbees.plugins.amazonecr;
 //import com.amazonaws;
 //import org.apache.http.wire;
-import groovy.json.JsonSlurper
-import java.io.File
+import groovy.json.JsonBuilder
+import groovy.json.JsonSlurper;
+
 
 class JenkinsCloudFormation extends Base implements Serializable {
   /* General Properties */
@@ -64,18 +65,17 @@ class JenkinsCloudFormation extends Base implements Serializable {
   def deployIaC(){
     def projectName="${script.env.project}".toLowerCase()
 
-    def json=new JsonSlurper()
-    def archivo=new File("parameter.json")
-	if(archivo.exists()){
-		this.script.steps.echo "Archivo existe:${archivo.getAbsolutePath()}"
-		def objeto=json.parse(archivo) 
-		if(objeto !=null){
-			if(objeto.s3.name == null && objeto.s3.name == null){
-				this.script.steps.echo "Objecto S3 nulo"
-			}
-			this.script.steps.echo "S3 Name:"+objeto.s3.name
-		}
-	}
+    String jsonResult = this.script.steps.sh(
+      script:"""
+        set +x
+        cat parameter.json
+      """,
+      returnStdout: true).trim()
+
+    JsonSlurper jsonSlurper = new JsonSlurper()
+    def jsonResultParsed = jsonSlurper.parseText(jsonResult)
+	this.script.steps.echo "Objecto ${jsonResultParsed}"
+	this.script.steps.echo "Objecto ${jsonResultParsed['s3']}"
   
      docker.withRegistry("https://${script.env.REGISTRY_CONTAINER_URL}", "ecr:us-east-1:credential-user-devops"){
 	 	 
