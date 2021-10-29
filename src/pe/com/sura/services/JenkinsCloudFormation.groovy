@@ -70,9 +70,10 @@ class JenkinsCloudFormation extends Base implements Serializable {
       usernameVariable: 'ACCESS',
       passwordVariable: 'SECRET']]) {
         def dockerParameters = "--network=host"
-        def dockerCommand =" aws configure set aws_access_key_id ${script.env.ACCESS} && aws configure set aws_secret_access_key ${script.env.SECRET} && aws configure set default.region ${script.env.AWS_REGION} && aws --version "
-        //dockerCommand+=" && aws cloudformation create-stack --stack-name STACK_S3 --template-body template.yml --parameters ParameterKey=BucketNameParam,ParameterValue=sura-dev-configuraciones ParameterKey=ProyectoParam,ParameterValue=PROYECTO001 ParameterKey=AmbienteParam,ParameterValue=DEV "
-		String dockerCmd = "docker run ${dockerParameters} ${script.env.REGISTRY_CONTAINER_URL}/${script.env.REGISTRY_ECR_NAME}:awscli-kubectl sh -c \"${dockerCommand}\""
+        def dockerVolumen="-v ${script.env.WORKSPACE}:/home/workspace -w /home/workspace "
+        def dockerCommand =" aws configure set aws_access_key_id ${script.env.ACCESS} && aws configure set aws_secret_access_key ${script.env.SECRET} && aws configure set default.region ${script.env.AWS_REGION} "
+        dockerCommand+=" && aws cloudformation create-stack --stack-name stack001 --template-body file:///home/workspace/template.yml --parameters ParameterKey=ResourceName,ParameterValue=sura-dev-config-s3-demo ParameterKey=ParamTagProject,ParameterValue=PROYECTO001 ParameterKey=ParamTagEnv,ParameterValue=DEV "
+		String dockerCmd = "docker run ${dockerParameters} ${dockerVolumen} ${script.env.REGISTRY_CONTAINER_URL}/${script.env.REGISTRY_ECR_NAME}:awscli-kubectl sh -c \"${dockerCommand}\""
 
         this.script.steps.sh "${dockerCmd}"
       }
