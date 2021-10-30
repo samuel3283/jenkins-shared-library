@@ -112,10 +112,10 @@ class JenkinsCloudFormation extends Base implements Serializable {
 		String dockerCmd = "docker run ${dockerParameters} ${dockerVolumen} ${script.env.REGISTRY_CONTAINER_URL}/${script.env.REGISTRY_ECR_NAME}:awscli-kubectl sh -c \"${dockerCommand}\""
 
 		def jsonResult = this.script.steps.sh(script: "cat parameter.json", returnStdout: true).trim()
+		JsonSlurper jsonSlurper = new JsonSlurper()
+		def jsonResultParsed = jsonSlurper.parseText(jsonResult.toString())
 
-        JsonSlurper jsonSlurper = new JsonSlurper()
-        def jsonResultParsed = jsonSlurper.parseJsonText(jsonResult)
-
+        
 /*
         String jsonResult = this.script.steps.sh (
             script:"""cat  ${script.env.WORKSPACE}/parameter.json""",
