@@ -118,7 +118,7 @@ class JenkinsCloudFormation extends Base implements Serializable {
 
 		def restResponse = '[{"uid":10512213, "name":"Bob"},{"uid":7208201, "name":"John"},{"uid":10570, "name":"Jim"},{"uid":1799657, "name":"Sally"}]'
 		def list = new JsonSlurper().parseText( restResponse )
-        this.script.steps.echo "${list['name']}"
+        this.script.steps.echo "${list}"
 
         this.script.steps.sh "${dockerCmd}"
       }
