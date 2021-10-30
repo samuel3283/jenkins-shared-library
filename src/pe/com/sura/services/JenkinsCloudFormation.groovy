@@ -111,7 +111,7 @@ class JenkinsCloudFormation extends Base implements Serializable {
         ).trim()
 		JsonSlurper jsonSlurper = new JsonSlurper()
 		//def jsonResultParsed = jsonSlurper.parseText(jsonResult)
-		def jsonResultParsed = jsonSlurper.parseText('{"firstName":"Guillame","lastName":"Laforge"}')
+		//def jsonResultParsed = jsonSlurper.parseText('{"firstName":"Guillame","lastName":"Laforge"}')
 
         this.script.steps.sh "${dockerCmd}"
       }
