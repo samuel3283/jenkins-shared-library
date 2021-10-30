@@ -24,9 +24,9 @@ class JenkinsCloudFormation extends Base implements Serializable {
   def execNodeCpu="2"
   def steps
 
-  def TAG_PROJECT="project"
-  def TAG_ENVIRONMENT="environment"
-  def TAG_COST_CENTER="cost_center"
+  def TAG_PROJECT="ParamTagProject"
+  def TAG_ENVIRONMENT="ParamTagEnv"
+  def TAG_COST_CENTER="ParamTagCostCenter"
   
   private JenkinsCloudFormation() {
   }
