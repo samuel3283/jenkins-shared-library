@@ -107,6 +107,7 @@ class JenkinsCloudFormation extends Base implements Serializable {
 
 		//def jsonResult = this.script.steps.sh(script: "cat parameter.json", returnStdout: true).trim()
 
+/*
         String jsonResult = this.script.steps.sh (
             script:"""cat  ${script.env.WORKSPACE}/parameter.json""",
             returnStdout: true
@@ -120,7 +121,12 @@ class JenkinsCloudFormation extends Base implements Serializable {
 		def list = new JsonSlurper().parseText( jsonResult )
         this.script.steps.echo "${list}"
 
-        this.script.steps.sh "${dockerCmd}"
+  */
+		def data = readJSON file:'parameter.json'
+		this.script.steps.echo "${data}"
+		//echo "color: ${data.attachments[0].color}"
+	
+		this.script.steps.sh "${dockerCmd}"
       }
     }
 
