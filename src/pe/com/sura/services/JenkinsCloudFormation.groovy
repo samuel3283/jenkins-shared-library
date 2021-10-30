@@ -68,6 +68,12 @@ class JenkinsCloudFormation extends Base implements Serializable {
   }
   */
   
+  @NonCPS
+  def parseJsonText(String jsonText) {
+    final slurper = new JsonSlurper()
+    return new HashMap<>(slurper.parseText(jsonText))
+  }
+  
   def deployIaC(){
     def projectName="${script.env.project}".toLowerCase()
 
@@ -105,7 +111,10 @@ class JenkinsCloudFormation extends Base implements Serializable {
         dockerCommand+=" && aws cloudformation create-stack --stack-name stack001 --template-body file:///home/workspace/template.yml --parameters ParameterKey=ResourceName,ParameterValue=sura-dev-config-s3-demo ParameterKey=ParamTagProject,ParameterValue=PROYECTO001 ParameterKey=ParamTagEnv,ParameterValue=DEV "
 		String dockerCmd = "docker run ${dockerParameters} ${dockerVolumen} ${script.env.REGISTRY_CONTAINER_URL}/${script.env.REGISTRY_ECR_NAME}:awscli-kubectl sh -c \"${dockerCommand}\""
 
-		//def jsonResult = this.script.steps.sh(script: "cat parameter.json", returnStdout: true).trim()
+		def jsonResult = this.script.steps.sh(script: "cat parameter.json", returnStdout: true).trim()
+
+        JsonSlurper jsonSlurper = new JsonSlurper()
+        def jsonResultParsed = jsonSlurper.parseJsonText(jsonResult)
 
 /*
         String jsonResult = this.script.steps.sh (
