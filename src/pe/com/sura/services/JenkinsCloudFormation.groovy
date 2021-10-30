@@ -42,9 +42,7 @@ class JenkinsCloudFormation extends Base implements Serializable {
   }
 
   def deployS3IaC(){
-    def projectName="${script.env.project}".toLowerCase()
-    this.script.steps.echo "Deploy Project::: ${projectName}"
-  
+    
     docker.withRegistry("https://${script.env.REGISTRY_CONTAINER_URL}", "ecr:us-east-1:credential-user-devops"){
 		 
 	this.script.steps.withCredentials([[
@@ -63,7 +61,10 @@ class JenkinsCloudFormation extends Base implements Serializable {
 	   
        dockerCommand+=" && aws cloudformation create-stack --stack-name ${nameStack} --template-body file:///home/workspace/template.yml --parameters ${paramS3} ${paramTag}"
 	   String dockerCmd = "docker run ${dockerParameters} ${dockerVolumen} ${script.env.REGISTRY_CONTAINER_URL}/${script.env.REGISTRY_ECR_NAME}:awscli-kubectl sh -c \"${dockerCommand}\""
-	
+	   
+	   def projectName="${script.env.project}".toLowerCase()
+       this.script.steps.echo "Deploy Project::: ${projectName}"
+  
 	   this.script.steps.sh "${dockerCmd}"
      }
    
