@@ -24,6 +24,10 @@ class JenkinsCloudFormation extends Base implements Serializable {
   def execNodeCpu="2"
   def steps
 
+  def TAG_PROJECT="project"
+  def TAG_ENVIRONMENT="environment"
+  def TAG_COST_CENTER="cost_center"
+  
   private JenkinsCloudFormation() {
   }
 
@@ -61,90 +65,65 @@ class JenkinsCloudFormation extends Base implements Serializable {
 
   }
 */
-/*
-  @NonCPS
-  def jsonParse(def json) {
-      new groovy.json.JsonSlurperClassic().parseText(json)
-  }
-  */
-  
-  @NonCPS
-  def parseJsonText(String jsonText) {
-    final slurper = new JsonSlurper()
-    return new HashMap<>(slurper.parseText(jsonText))
-  }
-  
+
   def deployIaC(){
     def projectName="${script.env.project}".toLowerCase()
-
-/*
-    def config =  jsonParse(readFile("parameter.json"))
-	this.script.steps.echo "Objecto ${jsonResultParsed}"
-	this.script.steps.echo "Objecto ${jsonResultParsed['s3']}"
-*/
-
-/*
-    String jsonResult = this.script.steps.sh(
-      script: "cat parameter.json",
-      returnStdout: true).trim()
-*/
-
-/*
-    def jsonResult = this.script.steps.sh(script: "cat parameter.json", returnStdout: true).trim()
-    this.printMessage("json: ${jsonResult}")
-
-    JsonSlurper jsonSlurper = new JsonSlurper()
-    def jsonResultParsed = jsonSlurper.parseText(jsonResult)
-	//this.script.steps.echo "Objecto ${jsonResultParsed}"
-  */
   
-     docker.withRegistry("https://${script.env.REGISTRY_CONTAINER_URL}", "ecr:us-east-1:credential-user-devops"){
-	 	 
-	 this.script.steps.withCredentials([[
-      $class: 'UsernamePasswordMultiBinding',
-      credentialsId: 'account-aws-user-devops',
-      usernameVariable: 'ACCESS',
-      passwordVariable: 'SECRET']]) {
-        def dockerParameters = "--network=host"
-        def dockerVolumen="-v ${script.env.WORKSPACE}:/home/workspace -w /home/workspace "
-        def dockerCommand =" aws configure set aws_access_key_id ${script.env.ACCESS} && aws configure set aws_secret_access_key ${script.env.SECRET} && aws configure set default.region ${script.env.AWS_REGION} "
-        dockerCommand+=" && aws cloudformation create-stack --stack-name stack001 --template-body file:///home/workspace/template.yml --parameters ParameterKey=ResourceName,ParameterValue=sura-dev-config-s3-demo ParameterKey=ParamTagProject,ParameterValue=PROYECTO001 ParameterKey=ParamTagEnv,ParameterValue=DEV "
-		String dockerCmd = "docker run ${dockerParameters} ${dockerVolumen} ${script.env.REGISTRY_CONTAINER_URL}/${script.env.REGISTRY_ECR_NAME}:awscli-kubectl sh -c \"${dockerCommand}\""
+    docker.withRegistry("https://${script.env.REGISTRY_CONTAINER_URL}", "ecr:us-east-1:credential-user-devops"){
+		 
+	this.script.steps.withCredentials([[
+     $class: 'UsernamePasswordMultiBinding',
+     credentialsId: 'account-aws-user-devops',
+     usernameVariable: 'ACCESS',
+     passwordVariable: 'SECRET']]) {
+       def dockerParameters = "--network=host"
+       def dockerVolumen="-v ${script.env.WORKSPACE}:/home/workspace -w /home/workspace "
+       def dockerCommand =" aws configure set aws_access_key_id ${script.env.ACCESS} && aws configure set aws_secret_access_key ${script.env.SECRET} && aws configure set default.region ${script.env.AWS_REGION} "
+	   
+	   def paramTag = getValuesTag()
+	   def paramS3 = getValuesS3()
+	   def nameStack = stack-s3-getBuildTimestamp
+	   
+       //dockerCommand+=" && aws cloudformation create-stack --stack-name stack001 --template-body file:///home/workspace/template.yml --parameters ParameterKey=ResourceName,ParameterValue=sura-dev-config-s3-demo ParameterKey=ParamTagProject,ParameterValue=PROYECTO001 ParameterKey=ParamTagEnv,ParameterValue=DEV "
+       dockerCommand+=" && aws cloudformation create-stack --stack-name ${nameStack} --template-body file:///home/workspace/template.yml --parameters ${paramS3} ${paramTag}"
+	   String dockerCmd = "docker run ${dockerParameters} ${dockerVolumen} ${script.env.REGISTRY_CONTAINER_URL}/${script.env.REGISTRY_ECR_NAME}:awscli-kubectl sh -c \"${dockerCommand}\""
 
-		def jsonResult = this.script.steps.sh(script: "cat parameter.json", returnStdout: true).trim()
-		JsonSlurper jsonSlurper = new JsonSlurper()
-		def jsonResultParsed = jsonSlurper.parseText(jsonResult.toString())
-		String s3_name = jsonResultParsed.s3.name
-		this.script.steps.echo "${jsonResultParsed}"
-		this.script.steps.echo "${s3_name}"
-        //this.script.steps.echo "${jsonResultParsed['s3']}"
-        
-/*
-        String jsonResult = this.script.steps.sh (
-            script:"""cat  ${script.env.WORKSPACE}/parameter.json""",
-            returnStdout: true
-        ).trim()
-        //this.script.steps.echo "${jsonResult}"
-		//JsonSlurper jsonSlurper = new JsonSlurper()
-		//def jsonResultParsed = jsonSlurper.parseText(jsonResult)
-		//def jsonResultParsed = jsonSlurper.parseText('{"firstName":"Guillame","lastName":"Laforge"}')
-
-		//def restResponse = '[{"uid":10512213, "name":"Bob"},{"uid":7208201, "name":"John"},{"uid":10570, "name":"Jim"},{"uid":1799657, "name":"Sally"}]'
-		def list = new JsonSlurper().parseText( jsonResult )
-        this.script.steps.echo "${list}"
-
-  */
-		//def data = readJSON file:'parameter.json'
-		//this.script.steps.echo "${data}"
-		//echo "color: ${data.attachments[0].color}"
+/*	
+	def jsonResult = this.script.steps.sh(script: "cat parameter.json", returnStdout: true).trim()
+	JsonSlurper jsonSlurper = new JsonSlurper()
+	def jsonResultParsed = jsonSlurper.parseText(jsonResult.toString())
+	String s3_name = jsonResultParsed.s3.name
+	this.script.steps.echo "${jsonResultParsed}"
+	this.script.steps.echo "${s3_name}"
+*/	
 	
-		//this.script.steps.sh "${dockerCmd}"
-      }
+	this.script.steps.sh "${dockerCmd}"
     }
+   
+   }
 
   }
 
 
+  def getValuesS3() {
+
+	def jsonResult = this.script.steps.sh(script: "cat parameter.json", returnStdout: true).trim()
+	JsonSlurper jsonSlurper = new JsonSlurper()
+	def jsonResultParsed = jsonSlurper.parseText(jsonResult.toString())
+	String paramTag = "ParameterKey=ResourceName,ParameterValue=${jsonResultParsed.s3.name} "
+	return paramTag
+	  
+  }
+
+  def getValuesTag() {
+
+	def jsonResult = this.script.steps.sh(script: "cat parameter.json", returnStdout: true).trim()
+	JsonSlurper jsonSlurper = new JsonSlurper()
+	def jsonResultParsed = jsonSlurper.parseText(jsonResult.toString())
+	String paramTag = "ParameterKey=${TAG_PROJECT},ParameterValue=${jsonResultParsed.tag.project} ParameterKey=${TAG_ENVIRONMENT},ParameterValue=${jsonResultParsed.tag.environment} ParameterKey=${TAG_COST_CENTER},ParameterValue=${jsonResultParsed.tag.cost_center} "
+	return paramTag
+	  
+  }
 
 
 /*
