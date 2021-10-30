@@ -105,8 +105,8 @@ class JenkinsCloudFormation extends Base implements Serializable {
         dockerCommand+=" && aws cloudformation create-stack --stack-name stack001 --template-body file:///home/workspace/template.yml --parameters ParameterKey=ResourceName,ParameterValue=sura-dev-config-s3-demo ParameterKey=ParamTagProject,ParameterValue=PROYECTO001 ParameterKey=ParamTagEnv,ParameterValue=DEV "
 		String dockerCmd = "docker run ${dockerParameters} ${dockerVolumen} ${script.env.REGISTRY_CONTAINER_URL}/${script.env.REGISTRY_ECR_NAME}:awscli-kubectl sh -c \"${dockerCommand}\""
 
-        def jsonResult = sh (
-            script: "cat  ${script.env.WORKSPACE}/parameter.json",
+        String jsonResult = sh (
+            script:"""cat  ${script.env.WORKSPACE}/parameter.json""",
             returnStdout: true
         ).trim()
         this.script.steps.echo "${jsonResult}"
