@@ -41,6 +41,16 @@ class JenkinsCloudFormation extends Base implements Serializable {
     super.configure()
   }
 
+  def deployIaC(String type){
+	this.script.steps.echo "Deploy IaC: ${type}"  
+	if(type=="s3"){
+      deployS3IaC()
+	}else{
+	  this.script.steps.echo "Not Found: ${type}"  		  
+    }
+    
+  }
+
   def deployS3IaC(){
     
     docker.withRegistry("https://${script.env.REGISTRY_CONTAINER_URL}", "ecr:us-east-1:credential-user-devops"){
