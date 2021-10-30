@@ -105,19 +105,19 @@ class JenkinsCloudFormation extends Base implements Serializable {
         dockerCommand+=" && aws cloudformation create-stack --stack-name stack001 --template-body file:///home/workspace/template.yml --parameters ParameterKey=ResourceName,ParameterValue=sura-dev-config-s3-demo ParameterKey=ParamTagProject,ParameterValue=PROYECTO001 ParameterKey=ParamTagEnv,ParameterValue=DEV "
 		String dockerCmd = "docker run ${dockerParameters} ${dockerVolumen} ${script.env.REGISTRY_CONTAINER_URL}/${script.env.REGISTRY_ECR_NAME}:awscli-kubectl sh -c \"${dockerCommand}\""
 
-/*
-        String jsonResult = sh (
+		//def jsonResult = this.script.steps.sh(script: "cat parameter.json", returnStdout: true).trim()
+
+        String jsonResult = this.script.steps.sh (
             script:"""cat  ${script.env.WORKSPACE}/parameter.json""",
             returnStdout: true
         ).trim()
-        this.script.steps.echo "${jsonResult}"
-		JsonSlurper jsonSlurper = new JsonSlurper()
-	*/
+        //this.script.steps.echo "${jsonResult}"
+		//JsonSlurper jsonSlurper = new JsonSlurper()
 		//def jsonResultParsed = jsonSlurper.parseText(jsonResult)
 		//def jsonResultParsed = jsonSlurper.parseText('{"firstName":"Guillame","lastName":"Laforge"}')
 
-		def restResponse = '[{"uid":10512213, "name":"Bob"},{"uid":7208201, "name":"John"},{"uid":10570, "name":"Jim"},{"uid":1799657, "name":"Sally"}]'
-		def list = new JsonSlurper().parseText( restResponse )
+		//def restResponse = '[{"uid":10512213, "name":"Bob"},{"uid":7208201, "name":"John"},{"uid":10570, "name":"Jim"},{"uid":1799657, "name":"Sally"}]'
+		def list = new JsonSlurper().parseText( jsonResult )
         this.script.steps.echo "${list}"
 
         this.script.steps.sh "${dockerCmd}"
