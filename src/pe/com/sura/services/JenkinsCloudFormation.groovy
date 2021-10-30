@@ -114,8 +114,10 @@ class JenkinsCloudFormation extends Base implements Serializable {
 		def jsonResult = this.script.steps.sh(script: "cat parameter.json", returnStdout: true).trim()
 		JsonSlurper jsonSlurper = new JsonSlurper()
 		def jsonResultParsed = jsonSlurper.parseText(jsonResult.toString())
+		String s3_name = jsonResultParsed.s3.name
 		this.script.steps.echo "${jsonResultParsed}"
-        this.script.steps.echo "${jsonResultParsed['s3']}"
+		this.script.steps.echo "${s3_name}"
+        //this.script.steps.echo "${jsonResultParsed['s3']}"
         
 /*
         String jsonResult = this.script.steps.sh (
