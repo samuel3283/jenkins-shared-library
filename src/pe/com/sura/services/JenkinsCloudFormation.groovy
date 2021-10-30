@@ -131,11 +131,11 @@ class JenkinsCloudFormation extends Base implements Serializable {
         this.script.steps.echo "${list}"
 
   */
-		def data = readJSON file:'parameter.json'
-		this.script.steps.echo "${data}"
+		//def data = readJSON file:'parameter.json'
+		//this.script.steps.echo "${data}"
 		//echo "color: ${data.attachments[0].color}"
 	
-		this.script.steps.sh "${dockerCmd}"
+		//this.script.steps.sh "${dockerCmd}"
       }
     }
 
