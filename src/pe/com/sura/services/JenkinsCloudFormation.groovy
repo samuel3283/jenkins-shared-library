@@ -142,13 +142,11 @@ class JenkinsCloudFormation extends Base implements Serializable {
   }
 
   def getValuesTag() {
-
 	def jsonResult = this.script.steps.sh(script: "cat parameter.json", returnStdout: true).trim()
 	JsonSlurper jsonSlurper = new JsonSlurper()
 	def jsonResultParsed = jsonSlurper.parseText(jsonResult.toString())
 	String paramTag = "ParameterKey=${TAG_PROJECT},ParameterValue=${jsonResultParsed.tag.project} ParameterKey=${TAG_ENVIRONMENT},ParameterValue=${jsonResultParsed.tag.environment} ParameterKey=${TAG_COST_CENTER},ParameterValue=${jsonResultParsed.tag.cost_center} "
-	return paramTag
-	  
+	return paramTag	  
   }
 
 
