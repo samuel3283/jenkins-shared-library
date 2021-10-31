@@ -102,10 +102,8 @@ class JenkinsCloudFormation extends Base implements Serializable {
        def dockerCommand =" aws configure set aws_access_key_id ${script.env.ACCESS} && aws configure set aws_secret_access_key ${script.env.SECRET} && aws configure set default.region ${script.env.AWS_REGION} "
 	   
 	   this.listResources.each {
-		 this.script.steps.echo "OBJ::: ${it}"
-		 this.script.steps.echo "VALUE:: ${it.value}"
-	     dockerCommand+=" && aws cloudformation describe-stack-resources --stack-name ${it.value} "
-		 //println "Item: $it"
+		 this.script.steps.echo "Objeto::: ${it}"
+	     dockerCommand+=" && aws cloudformation describe-stack-resources --stack-name ${it} "
 		}
        //dockerCommand+=" && aws cloudformation describe-stack-resources --stack-name ${nameStack} "
 	   String dockerCmd = "docker run ${dockerParameters} ${script.env.REGISTRY_CONTAINER_URL}/${script.env.REGISTRY_ECR_NAME}:awscli-kubectl sh -c \"${dockerCommand}\""
