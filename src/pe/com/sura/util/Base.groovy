@@ -53,7 +53,7 @@ abstract class Base {
     this.printMessage("BuildTimestamp: ${buildTimestamp}")
   }
   
-  public String getBuildTimestamp() {
+  protected String getBuildTimestamp() {
     return ${this.buildTimestamp}
   }
 /*
