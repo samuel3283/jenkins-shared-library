@@ -48,17 +48,17 @@ class JenkinsCloudFormation extends Base implements Serializable {
     super.configure()
   }
 
-  def deployIaC(String type, String file){
-	this.script.steps.echo "Deploy IaC: ${type} - ${file}"  
+  def deployIaC(String type){
+	this.script.steps.echo "Deploy IaC: ${type}"  
 	if(type=="s3"){
-      deployS3IaC(file)
+      deployS3IaC()
 	}else{
-	  this.script.steps.echo "Not Found: ${type} - ${file}"  		  
+	  this.script.steps.echo "Not Found: ${type}"  		  
     }
     
   }
 
-  def deployS3IaC(String file){
+  def deployS3IaC(){
     
     docker.withRegistry("https://${script.env.REGISTRY_CONTAINER_URL}", "ecr:us-east-1:credential-user-devops"){
 		 
@@ -71,9 +71,11 @@ class JenkinsCloudFormation extends Base implements Serializable {
        def dockerVolumen="-v ${script.env.WORKSPACE}:/home/workspace -w /home/workspace "
        def dockerCommand =" aws configure set aws_access_key_id ${script.env.ACCESS} && aws configure set aws_secret_access_key ${script.env.SECRET} && aws configure set default.region ${script.env.AWS_REGION} "
 	   
-	   def nameStack = getName(file)
+	   def paramTag = getValuesTag()
+	   def paramS3 = getValuesS3()
+	   def nameStack = "stack-s3-${buildTimestamp}"
 	   this.listResources.add(nameStack)
-       dockerCommand+=" && aws cloudformation create-stack --stack-name ${nameStack} --template-body file:///home/workspace/iac/templates/s3.yaml --parameters file:///home/workspace/iac/parameters/${file} "
+       dockerCommand+=" && aws cloudformation update-stack --stack-name ${nameStack} --template-body file:///home/workspace/template.yml --parameters ${paramS3} ${paramTag}"
 	   String dockerCmd = "docker run ${dockerParameters} ${dockerVolumen} ${script.env.REGISTRY_CONTAINER_URL}/${script.env.REGISTRY_ECR_NAME}:awscli-kubectl sh -c \"${dockerCommand}\""
 	   
 	   def projectName="${script.env.project}".toLowerCase()
@@ -124,13 +126,6 @@ class JenkinsCloudFormation extends Base implements Serializable {
     paramTag += " ParameterKey=BlockPublicAcls,ParameterValue=${jsonResultParsed.s3.blockPublicAcls} ParameterKey=BlockPublicPolicy,ParameterValue=${jsonResultParsed.s3.blockPublicPolicy} "
     paramTag += " ParameterKey=IgnorePublicAcls,ParameterValue=${jsonResultParsed.s3.ignorePublicAcls} ParameterKey=RestrictPublicBuckets,ParameterValue=${jsonResultParsed.s3.restrictPublicBuckets} "
 	return paramTag
-  }
-
-  def getName(file) {
-	def jsonResult = this.script.steps.sh(script: "cat iac/parameters/${file}", returnStdout: true).trim()
-	JsonSlurper jsonSlurper = new JsonSlurper()
-	def jsonResultParsed = jsonSlurper.parseText(jsonResult.toString())
-	return "${jsonResultParsed[0].ParameterValue}"	  
   }
 
   def getNameS3() {
