@@ -27,7 +27,8 @@ class JenkinsCloudFormation extends Base implements Serializable {
   def TAG_PROJECT="ParamTagProject"
   def TAG_ENVIRONMENT="ParamTagEnv"
   def TAG_COST_CENTER="ParamTagCostCenter"
-  
+  def listResources = []
+
   public JenkinsCloudFormation(    
     script,
     Docker docker,
@@ -73,13 +74,42 @@ class JenkinsCloudFormation extends Base implements Serializable {
 	   def paramTag = getValuesTag()
 	   def paramS3 = getValuesS3()
 	   def nameStack = "stack-s3-${buildTimestamp}"
-	   
+	   this.listResources.add(nameStack)
        dockerCommand+=" && aws cloudformation create-stack --stack-name ${nameStack} --template-body file:///home/workspace/template.yml --parameters ${paramS3} ${paramTag}"
 	   String dockerCmd = "docker run ${dockerParameters} ${dockerVolumen} ${script.env.REGISTRY_CONTAINER_URL}/${script.env.REGISTRY_ECR_NAME}:awscli-kubectl sh -c \"${dockerCommand}\""
 	   
 	   def projectName="${script.env.project}".toLowerCase()
        this.script.steps.echo "Deploy Project::: ${projectName}"
   
+	   this.script.steps.sh "${dockerCmd}"
+     }
+   
+    }
+
+  }
+
+
+  def showResults(){
+    
+    docker.withRegistry("https://${script.env.REGISTRY_CONTAINER_URL}", "ecr:us-east-1:credential-user-devops"){
+		 
+	this.script.steps.withCredentials([[
+     $class: 'UsernamePasswordMultiBinding',
+     credentialsId: 'account-aws-user-devops',
+     usernameVariable: 'ACCESS',
+     passwordVariable: 'SECRET']]) {
+       def dockerParameters = "--network=host"
+       def dockerCommand =" aws configure set aws_access_key_id ${script.env.ACCESS} && aws configure set aws_secret_access_key ${script.env.SECRET} && aws configure set default.region ${script.env.AWS_REGION} "
+	   
+	   this.listResources.each {
+		 this.script.steps.echo "OBJ::: ${it}"
+		 this.script.steps.echo "VALUE:: ${it.value}"
+	     dockerCommand+=" && aws cloudformation describe-stack-resources --stack-name ${it.value} "
+		 //println "Item: $it"
+		}
+       //dockerCommand+=" && aws cloudformation describe-stack-resources --stack-name ${nameStack} "
+	   String dockerCmd = "docker run ${dockerParameters} ${script.env.REGISTRY_CONTAINER_URL}/${script.env.REGISTRY_ECR_NAME}:awscli-kubectl sh -c \"${dockerCommand}\""
+	     
 	   this.script.steps.sh "${dockerCmd}"
      }
    
