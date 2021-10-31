@@ -75,7 +75,7 @@ class JenkinsCloudFormation extends Base implements Serializable {
 	   nameStack = "stack-s3-${nameStack}"
 	   this.listResources.add(nameStack)
        dockerCommand+=" && aws cloudformation create-stack --stack-name ${nameStack} --template-body file:///home/workspace/iac/templates/s3.yml --parameters file:///home/workspace/iac/parameters/${file} "
-	   String dockerCmd = "docker run ${dockerParameters} ${dockerVolumen} ${script.env.REGISTRY_CONTAINER_URL}/${script.env.REGISTRY_ECR_NAME}:awscli-kubectl sh -c \"${dockerCommand}\""
+	   String dockerCmd = "docker run ${dockerParameters} --rm ${dockerVolumen} ${script.env.REGISTRY_CONTAINER_URL}/${script.env.REGISTRY_ECR_NAME}:awscli-kubectl sh -c \"${dockerCommand}\""
 	   
 	   def projectName="${script.env.project}".toLowerCase()
        this.script.steps.echo "Deploy Project::: ${projectName}"
@@ -105,8 +105,8 @@ class JenkinsCloudFormation extends Base implements Serializable {
 	     dockerCommand+=" && aws cloudformation describe-stack-resources --stack-name ${it} "
 		}
        //dockerCommand+=" && aws cloudformation describe-stack-resources --stack-name ${nameStack} "
-	   String dockerCmd = "docker run ${dockerParameters} ${script.env.REGISTRY_CONTAINER_URL}/${script.env.REGISTRY_ECR_NAME}:awscli-kubectl sh -c \"${dockerCommand}\""
-	     
+	   String dockerCmd = "docker run --rm ${dockerParameters} ${script.env.REGISTRY_CONTAINER_URL}/${script.env.REGISTRY_ECR_NAME}:awscli-kubectl sh -c \"${dockerCommand}\""
+	   
 	   this.script.steps.sh "${dockerCmd}"
      }
    
