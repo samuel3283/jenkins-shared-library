@@ -53,10 +53,11 @@ abstract class Base {
     this.printMessage("BuildTimestamp: ${buildTimestamp}")
   }
   
+  /*
   protected String getBuildTimestamp() {
     return ${this.buildTimestamp}
   }
-/*
+
   protected void setBranchName() {
     this.branchName = this.script.steps.sh(
       script: 'git name-rev --name-only HEAD | sed "s?.*remotes/origin/??"',
