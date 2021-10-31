@@ -73,7 +73,7 @@ class JenkinsCloudFormation extends Base implements Serializable {
 	   
 	   def nameStack = getName(file)
 	   this.listResources.add(nameStack)
-       dockerCommand+=" && aws cloudformation create-stack --stack-name ${nameStack} --template-body file:///home/workspace/iac/templates/s3.yaml --parameters file:///home/workspace/iac/parameters/${file} "
+       dockerCommand+=" && aws cloudformation create-stack --stack-name ${nameStack} --template-body file:///home/workspace/iac/templates/s3.yml --parameters file:///home/workspace/iac/parameters/${file} "
 	   String dockerCmd = "docker run ${dockerParameters} ${dockerVolumen} ${script.env.REGISTRY_CONTAINER_URL}/${script.env.REGISTRY_ECR_NAME}:awscli-kubectl sh -c \"${dockerCommand}\""
 	   
 	   def projectName="${script.env.project}".toLowerCase()
