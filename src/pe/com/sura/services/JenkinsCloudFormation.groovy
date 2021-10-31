@@ -72,7 +72,6 @@ class JenkinsCloudFormation extends Base implements Serializable {
 	   
 	   def paramTag = getValuesTag()
 	   def paramS3 = getValuesS3()
-	   //String fecha = buildTimestamp.toString()
 	   def nameStack = "stack-s3-${buildTimestamp}"
 	   
        dockerCommand+=" && aws cloudformation create-stack --stack-name ${nameStack} --template-body file:///home/workspace/template.yml --parameters ${paramS3} ${paramTag}"
@@ -94,7 +93,11 @@ class JenkinsCloudFormation extends Base implements Serializable {
 	def jsonResult = this.script.steps.sh(script: "cat parameter.json", returnStdout: true).trim()
 	JsonSlurper jsonSlurper = new JsonSlurper()
 	def jsonResultParsed = jsonSlurper.parseText(jsonResult.toString())
-	String paramTag = "ParameterKey=ResourceName,ParameterValue=${jsonResultParsed.s3.name} "
+
+	String paramTag = "ParameterKey=ResourceName,ParameterValue=${jsonResultParsed.s3.name} ParameterKey=Versioning,ParameterValue=${jsonResultParsed.s3.versioningConfiguration} "
+    paramTag += "ParameterKey=BlockPublicAcls,ParameterValue=${jsonResultParsed.s3.blockPublicAcls} ParameterKey=BlockPublicPolicy,ParameterValue=${jsonResultParsed.s3.blockPublicPolicy} "
+    paramTag += "ParameterKey=IgnorePublicAcls,ParameterValue=${jsonResultParsed.s3.ignorePublicAcls} ParameterKey=RestrictPublicBuckets,ParameterValue=${jsonResultParsed.s3.restrictPublicBuckets} "
+
 	return paramTag
 	  
   }
