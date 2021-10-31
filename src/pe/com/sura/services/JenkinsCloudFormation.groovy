@@ -28,7 +28,12 @@ class JenkinsCloudFormation extends Base implements Serializable {
   def TAG_ENVIRONMENT="ParamTagEnv"
   def TAG_COST_CENTER="ParamTagCostCenter"
   
-  public JenkinsCloudFormation(buildTimestamp) {
+  public JenkinsCloudFormation(    
+    script,
+    Docker docker,
+	buildTimestamp) {
+      this.script = script
+      this.docker = docker
 	  this.buildTimestamp = buildTimestamp
   }
 
