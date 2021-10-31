@@ -66,7 +66,7 @@ class JenkinsCloudFormation extends Base implements Serializable {
 	   
 	   def paramTag = getValuesTag()
 	   def paramS3 = getValuesS3()
-	   this.script.steps.echo "Fecha:::::::: ${buildTimestamp}"
+	   this.script.steps.echo "Fecha:::::::: ${this.script.buildTimestamp}"
 	   String nameStack = "stack-s3-${buildTimestamp}"
 	   
        dockerCommand+=" && aws cloudformation create-stack --stack-name ${nameStack} --template-body file:///home/workspace/template.yml --parameters ${paramS3} ${paramTag}"
